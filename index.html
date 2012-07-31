@@ -1,0 +1,30 @@
+<html>
+	<head>
+		<script type="text/javascript" src="jsonrpc.js" ></script>
+		<script type="text/javascript">
+			
+			function buttonTestOnClick() {
+				
+				var rpc = new jsonrpc('jsonrpc.php');
+				rpc.call('jsonRpcSum', [1,2,3], function(response) {
+					print(response.result);
+				});
+			}
+
+			function print(output) {
+				var t = document.getElementById('textOutput');
+				t.innerHTML = output;	
+			}
+
+		</script>
+	</head>
+	<body>
+		<input id="buttonTest" name="buttonTest" 
+			type="button" value="test" 
+			onclick="buttonTestOnClick();"
+			/> Sum of 1, 2, and 3 is:<br />
+		<textarea id="textOutput" name="textOutput"
+			cols="40" rows="20"
+			></textarea><br />
+	</body>
+</html>
