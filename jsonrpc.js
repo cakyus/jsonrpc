@@ -1,7 +1,7 @@
-
 /**
  * JSON RPC
  * 
+ * @link https://github.com/cakyus/jsonrpc
  * @example
  * var rpc = new jsonrpc('http://localhost/rpc.php');
  * rpc.call('methodName', [], function(result) {

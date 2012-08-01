@@ -1,4 +1,9 @@
 <?php
+/**
+ * JSON RPC
+ * 
+ * @link https://github.com/cakyus/jsonrpc
+ **/
 
 $rpcServer = new JsonRpcServer;
 $rpcServer->write();
