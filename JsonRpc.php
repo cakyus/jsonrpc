@@ -71,6 +71,10 @@ class JsonRpc {
 			return $this->getResponseError(self::ERROR_PARSE);
 		}
 		
+		if (!is_array($request->params)) {
+			return $this->getResponseError(self::ERROR_PARSE);
+		}
+		
 		$this->id = $request->id;
 		
 		if (function_exists($request->method)) {
