@@ -1,12 +1,12 @@
 <html>
 	<head>
-		<script type="text/javascript" src="jsonrpc.js" ></script>
+		<script type="text/javascript" src="JsonRpc.js" ></script>
 		<script type="text/javascript">
 			
 			function buttonTestOnClick() {
 				
-				var rpc = new jsonrpc('jsonrpc.php');
-				rpc.call('jsonRpcSum', [1,2,3], function(response) {
+				var rpc = new jsonrpc('JsonRpc.php');
+				rpc.call('max', [1,2,3], function(response) {
 					print(response.result);
 				});
 			}
