@@ -102,9 +102,13 @@ class JsonRpc {
 			return $this->getResponseError(self::ERROR_METHOD_NOT_FOUND);
 		}
 		
-		return $this->getResponseResult(
-			call_user_func_array(array($object, $function), $request->params)
-		);
+		try {
+			$result = call_user_func_array(array($object, $function), $request->params);
+		} catch (\Exception $e) {
+			return $this->getResponseError(self::ERROR_INTERNAL_ERROR);
+		}
+		
+		return $this->getResponseResult($result);
 	}
 	
 	public function write() {
