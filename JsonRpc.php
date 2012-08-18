@@ -64,7 +64,9 @@ class JsonRpc {
 	}
 	
 	public function getResponse() {
+		
 		$input = file_get_contents('php://input');
+		
 		if (!$request = json_decode($input)) {
 			return $this->getResponseError(self::ERROR_PARSE);
 		}
@@ -77,7 +79,28 @@ class JsonRpc {
 			);
 		}
 		
-		return $this->getResponseError(self::ERROR_METHOD_NOT_FOUND);
+		$callbacks = explode('\\', $request->method);
+		
+		if (count($callbacks) == 1) {
+			return $this->getResponseError(self::ERROR_METHOD_NOT_FOUND);
+		}
+		
+		$function = array_pop($callbacks);
+		$class = implode('\\', $callbacks);
+		
+		if (!class_exists($class)) {
+			return $this->getResponseError(self::ERROR_METHOD_NOT_FOUND);
+		}
+		
+		$object = new $class;
+		
+		if (!method_exists($object, $function)) {
+			return $this->getResponseError(self::ERROR_METHOD_NOT_FOUND);
+		}
+		
+		return $this->getResponseResult(
+			call_user_func_array(array($object, $function), $request->params)
+		);
 	}
 	
 	public function write() {
