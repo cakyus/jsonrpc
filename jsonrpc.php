@@ -126,7 +126,46 @@ class JsonRpcServer {
 
 		return $this->getResponseError(self::ERROR_METHOD_NOT_FOUND);
 	}
+
 	public function write() {
+
+		if (isset($_SERVER['HTTP_ACCEPT'])){
+
+			if ($_SERVER['HTTP_ACCEPT'] == 'text/plain'){
+
+				header('Content-Type: text/plain');
+
+				$data[] = $this->getResponse();
+
+				while (count($data)){
+
+					$item = current($data);
+					$itemPath = key($data);
+
+					foreach ($item as $itemName => $itemValue){
+						if (is_array($itemValue) || is_object($itemValue)){
+							$data[$itemPath.'.'.$itemName] = $itemValue;
+						} else {
+							$itemValue = trim($itemValue);
+							$itemValueLine = explode("\n", $itemValue);
+							if (count($itemValueLine) == 0){
+								echo $itemPath.'.'.$itemName.': '.$itemValue."\n";
+							} else {
+								echo $itemPath.'.'.$itemName.":\n";
+								foreach ($itemValueLine as $itemValueLineItem){
+									echo ' '.$itemValueLineItem."\n";
+								}
+							}
+						}
+					}
+
+					array_shift($data);
+				}
+				return true;
+			}
+		}
+
+
 		header('Content-Type: application/json');
 		echo json_encode($this->getResponse());
 	}
