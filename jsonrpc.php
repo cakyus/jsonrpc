@@ -170,15 +170,3 @@ class JsonRpcServer {
 		echo json_encode($this->getResponse());
 	}
 }
-
-// test function which will be called
-
-function jsonRpcSum() {
-	$params = func_get_args();
-	$result = 0;
-	foreach ($params as $param) {
-		$result += $param;
-	}
-	return $result;
-}
-
