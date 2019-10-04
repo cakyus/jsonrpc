@@ -28,23 +28,23 @@ $rpcServer->write();
 
 /**
  * JSON RPC Server
- * 
+ *
  * @link http://www.jsonrpc.org/specification
  **/
 
 class JsonRpcServer {
-	
+
 	private $id = null;
-	
+
 	const ERROR_PARSE 				= -32700;
 	const ERROR_INVALID_REQUEST 	= -32600;
 	const ERROR_METHOD_NOT_FOUND 	= -32601;
 	const ERROR_INVALID_PARAMS 		= -32602;
 	const ERROR_INTERNAL_ERROR 		= -32603;
 	const ERROR_SERVER_ERROR 		= -32000;
-	
+
 	public function getResponseError($error, $data='') {
-		
+
 		switch ($error) {
 			case self::ERROR_PARSE:
 				$message = 'Parse error';
@@ -67,7 +67,7 @@ class JsonRpcServer {
 			default:
 				$message = 'Server error';
 		}
-		
+
 		return array(
 			 'jsonrpc' => '2.0'
 			,'error' => array(
@@ -76,25 +76,33 @@ class JsonRpcServer {
 				,'data' => $data
 				)
 			,'id' => $this->id
-			);		
+			);
 	}
-	
+
 	public function getResponseResult($result) {
 		return array(
 			 'jsonrpc' => '2.0'
 			,'result' => $result
 			,'id' => $this->id
-			);		
+			);
 	}
-	
+
 	public function getResponse() {
+
 		$input = file_get_contents('php://input');
 		if (!$request = json_decode($input)) {
 			return $this->getResponseError(self::ERROR_PARSE);
 		}
-		
-		$this->id = $request->id;
-		
+
+		if (property_exists($request, 'id') == false){
+			$this->id = null;
+		} else {
+			$this->id = $request->id;
+		}
+
+		if (property_exists($request, 'params') == false){
+			$request->params = array();
+		}
 
 		include('functions.php');
 
