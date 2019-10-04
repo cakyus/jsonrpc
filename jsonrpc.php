@@ -107,14 +107,25 @@ class JsonRpcServer {
 		include('functions.php');
 
 		if (function_exists($request->method)) {
-			return $this->getResponseResult(
-				call_user_func_array($request->method, $request->params)
-			);
+
+			try {
+
+				$responseResult = call_user_func_array($request->method, $request->params);
+				$responseError = error_get_last();
+
+				if (is_null($responseError)){
+					return $this->getResponseResult($responseResult);
+				}
+
+				return $this->getResponseError(self::ERROR_SERVER_ERROR, $responseError['message']);
+
+			} catch (\Exception $e){
+				return $this->getResponseError(self::ERROR_SERVER_ERROR, $e->getMessage());
+			}
 		}
-		
+
 		return $this->getResponseError(self::ERROR_METHOD_NOT_FOUND);
 	}
-	
 	public function write() {
 		header('Content-Type: application/json');
 		echo json_encode($this->getResponse());
